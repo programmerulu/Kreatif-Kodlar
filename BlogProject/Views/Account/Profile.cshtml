@@ -1,0 +1,79 @@
+﻿@using BlogProject.Entites
+@model User
+@{
+    Layout = "~/Views/Shared/_LayoutProfile.cshtml";
+    ViewData["Title"] = "Profile Page";
+
+
+}
+
+<div class="container">
+    <div class="row">
+
+        @{
+            byte[] imageBytes = System.IO.File.ReadAllBytes(Model.ProfilePicture);
+            string base64String = Convert.ToBase64String(imageBytes);
+            string base64Image = $"data:image/png;base64,{base64String}";
+        }
+        <div class="col-md-3" style="padding-right:30px;"><img style="width:100%;height:298px;" src="@base64Image" /></div>
+        <div class="col-md-9 mt-5" style="padding-left:30px;">
+
+            <h2>@Model.FirstName @Model.LastName</h2><span class="text-secondary">#@Model.Code</span>
+            <p>@Model.About</p>
+            <button type="button" class="btn bg-mediterranean text-white p-2">Revise your profile</button>
+
+        </div>
+
+    </div>
+
+    <hr />
+
+    <div class="row" style="margin-top:15%;">
+
+        <h3>Essays</h3>
+        <p>Yazmak, sadece kelimeleri kağıda dökmek değildir; düşünceleri, duyguları ve hayalleri kalıcı kılmaktır.</p>
+        <div class="d-flex flex-wrap">
+
+            @if (Model.Posts != null)
+            {
+                @foreach (var post in Model.Posts)
+                {
+
+                    byte[] imageModel = System.IO.File.ReadAllBytes(post.Image);
+                    string Modelbase64String = Convert.ToBase64String(imageModel);
+                    string Modelbase64Image = $"data:image/png;base64,{Modelbase64String}";
+
+                    <div class="col-sm-2 p-2">
+
+                        <a style="color: inherit;text-decoration: none; " href="@Url.Action(action:"UpdatePost",controller:"UserActions",new {receivedPostId=post.Id})">
+                            <div class="card @(post.IsPublished ?"":"disabled")">
+                                <img class="card-img-top" src="@Modelbase64Image" alt="Card image" style="width:100%;height:144px;">
+                                <div class="card-body">
+                                    <h6 class="card-title">@post.Header</h6>
+                                    <p style="font-size:10px;color:#dff9fb;" class="card-text">
+
+
+                                        <span style="background-color:@(post.IsPublished ?"green;" :"red;");padding:2px;">@(post.IsPublished ? "Yayınlandı" : "Yayınlanmadı")</span>
+
+                                    </p>
+                                </div>
+                            </div>
+                        </a>
+
+                    </div>
+                }
+            }
+            @if (Model.Posts.Count == 0)
+            {
+                <p class="text-secondary">Hiç makale yok :(</p>
+            }
+
+
+
+
+
+        </div>
+
+    </div>
+
+</div>

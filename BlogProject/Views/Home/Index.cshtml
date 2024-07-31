@@ -1,0 +1,81 @@
+﻿@using BlogProject.Entites
+@using System.Security.Claims
+@model List<Post>
+@{
+    var claimsIdentity = User.Identity as ClaimsIdentity;
+    if (claimsIdentity.IsAuthenticated != false)
+    {
+        // Eğer claimsIdentity varsa, layout yüklemesini yapabilirsiniz
+        Layout = "~/Views/Shared/_LayoutProfile.cshtml";
+        ViewData["Title"] = "Home Page";
+    }
+    else
+    {
+        Layout = "~/Views/Shared/_Layout.cshtml";
+        ViewData["Title"] = "Home Page";
+    }
+   
+
+}
+
+<div class="mt-5 mx-auto" style="width:80%;">
+
+    <div class="d-flex justify-content-end mb-4">
+        <form method="GET" class="form-inline">
+            <div class="input-group">
+                <input class="form-control tm-search-input" name="query" type="text" placeholder="Search..." aria-label="Search">
+                <div class="input-group-append">
+                    <button class="btn btn-outline-secondary tm-search-button" type="submit">
+                        <i class="fas fa-search tm-search-icon" aria-hidden="true"></i>
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div>
+
+        @for (int i = 0; i < 1; i++)
+        {
+            <div class="row mt-5">
+
+                @foreach (var item in Model)
+                {
+
+                    byte[] imageBytes = System.IO.File.ReadAllBytes(item.Image);
+                    string base64String = Convert.ToBase64String(imageBytes);
+                    string base64Image = $"data:image/png;base64,{base64String}";
+                    @if (item.IsPublished)
+                    {
+                        <div class="col-md-6 cardHover shadow" style="padding-right:20px;">
+                            <hr class="hrNew">
+                            <a style="color: inherit;text-decoration: none; " href="@Url.Action(action:"ContentOfPost", controller:"UserActions", new { receivedId = item.Id })">
+
+                                <img src="@base64Image" style="width:490px;height:245px;margin-top:10%;" alt="Image" class="img-fluid">
+                                <h2 class="tm-pt-30 text-mediterranean tm-post-title">@item.Header</h2>
+                                <p class="tm-pt-30 containerThreePoint">
+                                    @item.Content
+                                </p>
+                                <div class="tag-container tm-pt-45">
+                                    @foreach (var tag in item.Tags)
+                                    {
+                                        <span class="tag text-white" style="background-color:@tag.Color;"><b>@tag.Name</b></span>
+                                    }
+                                    <span class="created-date">@item.CreatedDate.ToShortDateString()</span>
+                                </div>
+                                <hr>
+                                <div class="d-flex justify-content-between">
+                                    <span>@item.User.Comments.Count comments</span>
+                                    <span>by @item.User.FirstName @item.User.LastName</span>
+                                </div>
+                            </a>
+                        </div>
+                    }
+
+                   
+                }
+            </div>
+        }
+
+
+    </div>
+</div>

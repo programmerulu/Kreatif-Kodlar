@@ -1,0 +1,109 @@
+﻿@using BlogProject.Entites
+@using System.Security.Claims
+@model Post
+@{
+    var claimsIdentity = User.Identity as ClaimsIdentity;
+    if (claimsIdentity.IsAuthenticated != false)
+    {
+        Layout = "~/Views/Shared/_LayoutProfile.cshtml";
+        ViewData["Title"] = "Home Page";
+    }
+    else
+    {
+        Layout = "~/Views/Shared/_Layout.cshtml";
+        ViewData["Title"] = "Home Page";
+    }
+
+
+    byte[] imageBytes = System.IO.File.ReadAllBytes(Model.Image);
+    string base64String = Convert.ToBase64String(imageBytes);
+    string base64Image = $"data:image/png;base64,{base64String}";
+
+    string userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
+    int? userId = null;
+
+    if (User.Identity.IsAuthenticated && !string.IsNullOrEmpty(userIdClaim))
+    {
+        userId = int.Parse(userIdClaim);
+    }
+
+
+}
+
+<div class="container py-5">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div class="card mb-4">
+                <div class="card-header d-flex align-items-center">
+                    @{
+                        byte[] imageBytesForProfilePic = System.IO.File.ReadAllBytes(Model.User.ProfilePicture);
+                        string base64StringForProfilePic = Convert.ToBase64String(imageBytesForProfilePic);
+                        string base64ImageProfilePic = $"data:image/png;base64,{base64StringForProfilePic}";
+                    }
+                    <img src="@base64ImageProfilePic" class="rounded-circle me-3" alt="Profile Picture" style="width: 40px; height: 40px; object-fit: cover;">
+                    <h5 class="card-title mb-0">@Model.User.FirstName @Model.User.LastName</h5><span class="text-secondary">#@Model.User.Code</span>
+                </div>
+                <img src="@base64Image" class="card-img-top" alt="Post Image">
+                <div class="card-body">
+                    <h2 class="card-title">@Model.Header</h2>
+                    <p class="card-text">
+                        @Model.Content
+                    </p>
+                </div>
+                <div class="card-footer">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <i class="fas fa-tags me-2"></i>
+                            @foreach (var item in Model.Tags)
+                            {
+                                <span class="badge" style="background-color:@item.Color">@item.Name</span>
+                            }
+                            
+                        </div>
+                        <div class="text-muted">
+                            @Model.CreatedDate.ToShortDateString()
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Yorumlar</h5>
+                    <form method="post" action="@Url.Action("SendComment", "UserActions")">
+                        <div class="mb-3">
+                            <label for="commentContent" class="form-label">Bir yorum yaz</label>
+                            <textarea class="form-control" id="commentContent" name="Content" rows="3" required></textarea>
+                            <input type="hidden" name="PostId" value="@Model.Id" />
+                            <input type="hidden" name="CreatedDate" value="@DateTime.Now.ToShortDateString()" />
+                            <input type="hidden" name="UserId" value="@userId" />
+                        </div>
+                        <button type="submit" class="btn btn-primary">Gönder</button>
+                    </form>
+                    <hr />
+                    @foreach (var comment in Model.Comments)
+                    {
+                        <div class="card mb-3">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center mb-2">
+                                    @{
+                                        byte[] commentImageBytes = System.IO.File.ReadAllBytes(comment.User.ProfilePicture);
+                                        string commentBase64String = Convert.ToBase64String(commentImageBytes);
+                                        string commentBase64Image = $"data:image/png;base64,{commentBase64String}";
+                                    }
+                                    <img src="@commentBase64Image" class="rounded-circle me-3" alt="User Profile Picture" style="width: 30px; height: 30px; object-fit: cover;">
+                                    <h6 class="card-subtitle mb-0 text-muted">@comment.User.FirstName @comment.User.LastName</h6>
+                                </div>
+                                <p class="card-text">
+                                    @comment.Content
+                                </p>
+                                <div class="text-muted">
+                                    @comment.CreatedDate?.ToShortDateString()
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,65 @@
+﻿@using System.Security.Claims
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>@ViewData["Title"] - BlogProject</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/BlogProject.styles.css" asp-append-version="true" />
+</head>
+<body>
+
+    <div class="row">
+
+
+        <div class="col-lg-3">
+
+            <div class="card bg-mediterranean text-white" style="height:100%;">
+                <div class="card-body">
+
+                    <img src="~/assets/images/logo.png" style="width:100%;" />
+                    <nav class="nav flex-column text-white p-3 rounded">
+                        <a class="nav-link text-white text-start py-3" style="padding-right:0px;padding-left:0px;" asp-controller="Home" asp-action="Index"><img style="margin-right:60px;" src="~/assets/images/home.png" />Home</a>
+                        <a class="nav-link text-white text-start py-3" style="padding-right:0px;padding-left:0px;" asp-controller="UserActions" asp-action="SharePost"><img style="margin-right:60px;" src="~/assets/images/home.png">Single Post</a>
+                        <a class="nav-link text-white text-start py-3" style="padding-right:0px;padding-left:0px;" asp-controller="Account" asp-action="Profile" asp-route-userId="@User.FindFirstValue(ClaimTypes.NameIdentifier)"><img style="margin-right:60px;" src="~/assets/images/home.png" />Profile</a>
+                        <a class="nav-link text-white text-start py-3" style="padding-right:0px;padding-left:0px;" href="#"><img style="margin-right:60px;" src="~/assets/images/home.png" />Settings</a>
+                        <a class="nav-link text-white text-start py-3" style="padding-right:0px;padding-left:0px;" asp-controller="Account" asp-action="Logout"><img style="margin-right:60px;" src="~/assets/images/home.png">Log Out</a>
+
+                    </nav>
+
+                    <div class="d-flex flex-wrap mb-3" style="margin-top:30%">
+
+                        <div class="p-3 order-3 bg-light"><img src="~/assets/images/facebook.png" /></div>
+                        <div class="p-3 order-2 bg-light"><img src="~/assets/images/instagram.png" /></div>
+                        <div class="p-3 order-1 bg-light"><img src="~/assets/images/linkedin.png" /></div>
+                        <div class="p-3 order-3 bg-light"><img src="~/assets/images/youtube.png" /></div>
+                    </div>
+
+                    <p style="margin-top:30%;font-size:20px;">Xtra Blog is a multi-purpose HTML template from TemplateMo website. Left side is a sticky menu bar. Right side content will scroll up and down.</p>
+
+                </div>
+            </div>
+
+
+        </div>
+
+        <div class="col-lg-9">
+
+            <div class="card border-0">
+                <div class="card-body">
+
+                    @RenderBody()
+
+                </div>
+            </div>
+
+
+        </div>
+
+
+    </div>
+
+</body>
+</html>

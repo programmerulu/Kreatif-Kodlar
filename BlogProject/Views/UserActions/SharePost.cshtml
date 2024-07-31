@@ -1,0 +1,34 @@
+﻿@using BlogProject.Entites
+@model SharePostViewModel
+@{
+    Layout = "~/Views/Shared/_LayoutProfile.cshtml";
+    ViewData["Title"] = "Share Post Page";
+}
+
+<div class="container my-5">
+    <h1 class="text-center mb-4">Makale Yazma Sayfası</h1>
+    <form asp-controller="UserActions" asp-action="SharePost" method="post" enctype="multipart/form-data">
+        <div class="mb-3">
+            <label for="header" class="form-label">Başlık</label>
+            <input type="text" class="form-control" id="header" asp-for="newPost.Header" placeholder="Makale başlığını giriniz">
+        </div>
+        <div class="mb-3">
+            <label for="content" class="form-label">İçerik</label>
+            <textarea class="form-control" id="content" rows="6" asp-for="newPost.Content" placeholder="Makale içeriğini giriniz"></textarea>
+        </div>
+        <div class="mb-3">
+            <label for="Image" class="form-label">Görsel (URL)</label>
+            <input type="file" asp-for="newPost.Image" class="form-control" id="Image" name="Image">
+        </div>
+        <div class="mb-3">
+            <label for="tag" class="form-label">Tag seçimi yap</label>
+            <select class="form-select mt-3" name="selectedTagIds" asp-for="SelectedTagIds" multiple>
+                @foreach (var item in Model.AllTags)
+                {
+                    <option value="@item.Id">@item.Name</option>
+                }
+            </select>
+        </div>
+        <button type="submit" class="btn btn-primary">Makaleyi Gönder</button>
+    </form>
+</div>
